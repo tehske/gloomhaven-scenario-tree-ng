@@ -54,7 +54,12 @@ export class TreeComponent implements OnChanges {
     this.setEdgeVisibility();
     this.colorScenarios();
     this.checkSpecialCases();
-    this.hideRequiredEdges();
+    // selected nodes are pink
+    this.cy.nodes(':selected').css({
+      'color': '#ff4081',
+      'background-color': '#ff4081',
+      'border-width': '0px'
+    });
   }
   private setNodeVisibility() {
     this.cy.nodes('[status != "hidden"]')
@@ -94,15 +99,6 @@ export class TreeComponent implements OnChanges {
     // Set edges coming into hidden nodes to be hidden (cleans up edges to nothing)
     this.cy.nodes('[status = "hidden"]')
       .incomers('edge')
-      .css({'visibility': 'hidden'});
-  }
-  private hideRequiredEdges() {
-    // Set all requiredby edges to hidden
-    this.cy.nodes()
-      .outgoers('edge[type = "requiredby"]')
-      .css({'visibility': 'hidden'});
-	  this.cy.nodes()
-      .incomers('edge[type = "requiredby"]')
       .css({'visibility': 'hidden'});
   }
   private colorScenarios() {
@@ -243,6 +239,11 @@ export class TreeComponent implements OnChanges {
     this.cy.nodes().unselect();
     selectedNode.select();
     // this.colorScenarios();
+    this.cy.animate({
+      center: {
+        eles: selectedNode
+      }
+    });
   }
   private getCytoscapeConfig() {
     return {
